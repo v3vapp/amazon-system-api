@@ -1,2 +1,8 @@
 pandas
-tkinter
+# tkinter
+fastapi
+uvloop
+uvicorn
+python-multipart
+httptools
+aiofiles
