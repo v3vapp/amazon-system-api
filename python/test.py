@@ -1,3 +1,8 @@
-import checksheet
+# from checksheet import generate
 
-checksheet.generate("sample/12345.txt")
+# generate("sample/12345.txt")
+
+from python.cs import AmazonCheckSheet
+
+sheet = AmazonCheckSheet("static/unshipped.txt")
+sheet.generate()

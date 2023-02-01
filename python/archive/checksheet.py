@@ -6,7 +6,7 @@ def generate(file_path):
 
     df_amazon = pd.read_csv(file_path, encoding = "cp932")
 
-    # print(df_amazon)
+    print(df_amazon)
 
     list_purchase_date = []
     list_promise_date = []
