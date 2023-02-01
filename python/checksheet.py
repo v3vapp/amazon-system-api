@@ -1,78 +1,70 @@
 import pandas as pd
 from datetime import datetime as dt
-import os
-from tkinter import Tk     # from tkinter import Tk for Python 3.x
-from tkinter.filedialog import askopenfilename
+import config
 
-from tkinter import filedialog, Tk
-import platform
+def generate(file_path):
 
-from pathlib import Path
-# ダイアログ用のルートウィンドウの作成
-root = Tk()
-# ウィンドウサイズを0にする（Windows用の設定）
-root.geometry("0x0")
-# ウィンドウのタイトルバーを消す（Windows用の設定）
-root.overrideredirect(1)
-# ウィンドウを非表示に
-root.withdraw()
-system = platform.system()
+    df_amazon = pd.read_csv(file_path, encoding = "cp932")
 
-def select_file():
-    # Windowsの場合withdrawの状態だとダイアログも
-    # 非表示になるため、rootウィンドウを表示する
-    if system == "Windows":
-        root.deiconify()
-    # macOS用にダイアログ作成前後でupdate()を呼ぶ
-    root.update()
-    # ダイアログを前面に
-    root.lift()
-    root.focus_force()
-    path_str = filedialog.askopenfilename()
-    root.update()
-    if system == "Windows":
-        # 再度非表示化（Windowsのみ）
-        root.withdraw()
-    path = Path(path_str)
-    return path.absolute()
+    # print(df_amazon)
 
-filename = select_file()
+    list_purchase_date = []
+    list_promise_date = []
 
-df_cp = pd.read_csv(filename, encoding = "shift-jis")
-print(df_cp.head())
+    for index, row in df_amazon.iterrows():
+        list_purchase_date.append(row["purchase-date"])
+        list_promise_date.append(row["promise-date"])
 
+    # list_purchase_date_simple = []
+    # list_promise_date_simple = []
+    # for purchase_date, promise_date in zip(list_purchase_date,list_promise_date):
+    #     list_purchase_date_simple.append(purchase_date[5:10])
+    #     list_promise_date_simple.append(promise_date[5:10])
 
-# order-id	
-# order-item-id	
-# quantity	
-# ship-date	
-# carrier-code	
-# carrier-name	
-# tracking-number	
-# ship-method	
-# cod-collection-method	
-# transparency_code	
-# ship_from_address_name	
-# ship_from_address_line1	
-# ship_from_address_line2	
-# ship_from_address_line3	
-# ship_from_address_city	
-# ship_from_address_county	
-# ship_from_address_state_or_region	
-# ship_from_address_postalcode	
-# ship_from_address_countrycode
+    tdatetime = dt.now()
+    now = tdatetime.strftime('%m%d')
+
+    df = pd.DataFrame()
+    # df['購入日']   = list_purchase_date_simple
+    # df['出荷期限'] = list_promise_date_simple
+    df['購入日'] = list_purchase_date
+
+    df['出荷期限'] = list_promise_date
+
+    df['購入者'] = df_amazon["buyer-name"]
+    df['宛先'] = df_amazon["recipient-name"]
+    df['発送方法'] = ""
+
+    df[f'商品名'] = df_amazon["product-name"]
+    df['個'] = df_amazon["quantity-purchased"]
+
+    df['要注文'] = ""
+    df['注文済'] = ""
+    df['完了'] = ""
 
 
-df = pd.DataFrame()
+    df['購入日'] = pd.to_datetime(df['購入日'])
+    df.sort_values(by=['購入日'], inplace=True, ascending=False)
 
-    df_cp['お届け先郵便番号']  
-    df_cp['お届け先氏名']    
-    df_cp['お届け先敬称']     
-    df_cp['お届け先住所1行目'] 
-    df_cp['お届け先住所2行目'] 
-    df_cp['お届け先住所3行目']
-    df_cp['お届け先住所4行目'] 
-    df_cp['内容品']
+    df['購入日'] = pd.to_datetime(df['購入日']).dt.strftime('%m-%d %H:%M')
+    # df['購入日'] = df['購入日'].dt.strftime('%m-%d %H:%M')
 
-# I left codes below on the other pc. 
-# will be here soon...
+    df['出荷期限'] = pd.to_datetime(df['出荷期限']).dt.strftime('%m-%d')
+    # df['出荷期限'] = df['出荷期限'].dt.strftime('%m-%d')
+
+
+    # df = df.iloc[::-1]
+
+    # df.reset_index(drop=True, inplace=True)
+
+    # df.index = np.arange(1, len(df)+1)
+    # print(df)
+
+    export_path = f"./static/AmazonCheckSheet_{now}.csv"
+    df.to_csv(export_path, index = False, encoding = "cp932")
+
+#----------------------------------------------------------------------------------------
+
+if __name__ == "__main__":
+
+    generate("/home/daiki/Dropbox/v3v/amazon-assistant-api/sample/12345.txt")

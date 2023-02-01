@@ -2,6 +2,16 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+
+def rename_file(filename_uploaded, new_name="unshipped.txt"):
+    old_path = f'./static/{filename_uploaded}'
+    new_path = f'./static/{new_name}'
+    os.rename(old_path, new_path)
+    return new_path
+
 
 
 app = FastAPI()
@@ -13,33 +23,30 @@ app.add_middleware(
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
-)
+    allow_headers=["*"],)
 
-# @app.get("/")
-# async def create_files():
-#     return {"message": "nice!"}
-
-# @app.post("/upload/")
-# async def create_files(file: UploadFile):
-#     return {"file_data": file}
-
-# @app.post("/files/")
-# async def create_files(file1: UploadFile, file2: UploadFile):
-#     return {"file1_name": file1.filename, "file2_name": file2.filename}
-
-
-
-@app.post('/upload')
+@app.post('/up')
 def get_uploadfile(upload_file: UploadFile = File(...)):
+    import checksheet
+
+    print(upload_file.file)
+
     path = f'static/{upload_file.filename}'
+
     with open(path, 'w+b') as buffer:
         shutil.copyfileobj(upload_file.file, buffer)
-    return {
-        'filename': path,
-        'type': upload_file.content_type
-    }
+        unshipped_path = rename_file(upload_file.filename, "unshipped.txt")
 
+        checksheet.generate(unshipped_path)
+
+    return {'filename': path,
+            'type': upload_file.content_type}
+
+
+@app.get('/down/{name}', response_class=FileResponse)
+def get_file(name: str):
+    path = f'static/{name}'
+    return path
 
 
 if __name__ == "__main__":
