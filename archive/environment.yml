@@ -1,0 +1,4 @@
+name: myenv
+channels:
+  - defaults
+prefix: /home/daiki/anaconda3/envs/myenv

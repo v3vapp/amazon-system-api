@@ -1,0 +1,11 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t',
+           'us-central1-docker.pkg.dev/loxol-376616/amazon-system-repo/quickstart-image:tag1',
+           '.']
+
+  # Docker Push
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push',
+           'us-central1-docker.pkg.dev/loxol-376616/amazon-system-repo/quickstart-image:tag1']

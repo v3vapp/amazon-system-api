@@ -1,0 +1,6 @@
+static
+archive
+project
+.vscode
+.git
+__pycache__

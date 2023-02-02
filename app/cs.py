@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime as dt
-import config
+# from app.config import root
 
 class AmazonCheckSheet:
     def __init__(self, file_path):

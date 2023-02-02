@@ -4,15 +4,16 @@ import shutil
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 import os
-from python.cs import AmazonCheckSheet
-import config
+from app.cs import AmazonCheckSheet
+from app.config import take_me_root
 
+root = take_me_root()
 #_____________________________________________________________________________
 
 
 def rename_file(filename_uploaded, new_name="unshipped.txt"):
-    old_path = f'{config.root}/static/{filename_uploaded}'
-    new_path = f'{config.root}/static/{new_name}'
+    old_path = f'{root}/static/{filename_uploaded}'
+    new_path = f'{root}/static/{new_name}'
     os.rename(old_path, new_path)
     return new_path
 
@@ -30,15 +31,18 @@ app.add_middleware(
 
 #_____________________________________________________________________________
 
+@app.get('/')
+def get_file():
+    return {"message":"Oh, Hi there! (v3v)<3"}
 
 @app.post('/up')
 def get_uploadfile(upload_file: UploadFile = File(...)):
     # try:
-        os.makedirs(f'{config.root}/static/', exist_ok=True)
+        os.makedirs(f'{root}/static/', exist_ok=True)
 
         app.mount('/static', StaticFiles(directory="static"), name='static')
 
-        path = f'{config.root}/static/{upload_file.filename}'
+        path = f'{root}/static/{upload_file.filename}'
 
         with open(path, 'w+b') as buffer:
 
@@ -61,7 +65,7 @@ def get_uploadfile(upload_file: UploadFile = File(...)):
 @app.get('/down/{name}', response_class=FileResponse)
 def get_file(name: str):
 
-    path = f'{config.root}/static/{name}'
+    path = f'{root}/static/{name}'
 
     return path
 #_____________________________________________________________________________
@@ -70,7 +74,7 @@ def get_file(name: str):
 @app.get('/clear')
 def get_file():
 
-    shutil.rmtree(f"{config.root}/static/")
+    shutil.rmtree(f"{root}/static/")
 
     return {"message":"done"}
 
