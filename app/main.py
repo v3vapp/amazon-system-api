@@ -4,8 +4,8 @@ import shutil
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 import os
-from python.cs import AmazonCheckSheet
-from python.config import take_me_root
+from app.cs import AmazonCheckSheet
+from app.config import take_me_root
 
 root = take_me_root()
 #_____________________________________________________________________________

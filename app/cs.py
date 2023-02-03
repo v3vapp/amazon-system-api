@@ -64,11 +64,7 @@ class AmazonCheckSheet:
         df["注文済"]   = ""
         df["完了"]     = ""
 
-
-
-
         df.drop(columns=['購入日', "出荷期限", "SKU", "宛名", "購入者" ], inplace=True)
-
 
         now = dt.now().strftime("%m%d")
 
