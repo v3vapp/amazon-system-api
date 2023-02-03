@@ -36,23 +36,28 @@ def get_file():
     return {"message":"Oh, Hi there! (v3v)<3"}
 
 @app.post('/upload')
-def get_uploadfile(file1: UploadFile):
+def get_uploadfile(file1: UploadFile, file2: UploadFile):
 
     os.makedirs(f'{root}/static/', exist_ok=True)
 
     app.mount('/static', StaticFiles(directory="static"), name='static')
 
-    path = f'{root}/static/{file1.filename}'
+    path_unshipped = f'{root}/static/{file1.filename}'
+    path_neworder = f'{root}/static/{file2.filename}'
 
-    with open(path, 'w+b') as buffer:
-
+    with open(path_unshipped, 'w+b') as buffer:
         shutil.copyfileobj(file1.file, buffer)
-
         unshipped_path = rename_file(file1.filename, "unshipped.txt")
 
-    AmazonCheckSheet(unshipped_path).generate()
+    with open(path_neworder, 'w+b') as buffer:
+        shutil.copyfileobj(file2.file, buffer)
+        neworder_path = rename_file(file2.filename, "neworder.txt")
 
-    return {'message':"ok"}
+    sheet = AmazonCheckSheet(unshipped_path, neworder_path)
+    
+    export_filename = sheet.generate()
+
+    return {'export_filename':export_filename}
 
 
 #_____________________________________________________________________________
