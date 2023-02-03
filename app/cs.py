@@ -31,12 +31,12 @@ class AmazonCheckSheet:
         df["出荷期限"] = df["出荷期限"].dt.tz_convert('Asia/Tokyo')
         df["出荷期限"] = df["出荷期限"].dt.strftime("%m-%d")
         
-        df["購入日 & 〆切"]   = df[['購入日', '出荷期限']].agg(' 〆'.join, axis=1)
+        # df["購入日 & 〆切"]   = df[['購入日', '出荷期限']].agg(' 〆'.join, axis=1)
 
         df["購入者"]   = self.df_main["buyer-name"]
         df["宛名"]     = self.df_main["recipient-name"]
 
-        df["購入者-> 宛名"]   = df[['購入者', '宛名']].agg(' > '.join, axis=1)
+        # df["購入者-> 宛名"]   = df[['購入者', '宛名']].agg(' > '.join, axis=1)
 
         df["発送方法"]  = ""
 
@@ -55,8 +55,9 @@ class AmazonCheckSheet:
                 if main_oid == price_oid:
                     df.loc[i, "支払金額"] = paid
 
-        df["商品名 @SKU"]   = self.df_main[['product-name', 'sku']].agg(' @'.join, axis=1)
-                
+        # df["商品名 @SKU"]   = self.df_main[['product-name', 'sku']].agg(' @'.join, axis=1)
+        
+        df["商品名"]   = self.df_main['product-name']
         df["個"]      = self.df_main["quantity-purchased"]
 
         df["SKU"]     = self.df_main["sku"]
@@ -64,7 +65,7 @@ class AmazonCheckSheet:
         df["注文済"]   = ""
         df["完了"]     = ""
 
-        df.drop(columns=['購入日', "出荷期限", "SKU", "宛名", "購入者" ], inplace=True)
+        # df.drop(columns=['購入日', "出荷期限", "SKU", "宛名", "購入者" ], inplace=True)
 
         now = dt.now().strftime("%m%d")
 
