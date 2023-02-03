@@ -4,8 +4,8 @@ import shutil
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 import os
-from app.cs import AmazonCheckSheet
-from app.config import take_me_root
+from python.cs import AmazonCheckSheet
+from python.config import take_me_root
 
 root = take_me_root()
 #_____________________________________________________________________________
@@ -35,34 +35,30 @@ app.add_middleware(
 def get_file():
     return {"message":"Oh, Hi there! (v3v)<3"}
 
-@app.post('/up')
-def get_uploadfile(upload_file: UploadFile = File(...)):
-    # try:
-        os.makedirs(f'{root}/static/', exist_ok=True)
+@app.post('/upload')
+def get_uploadfile(file1: UploadFile):
 
-        app.mount('/static', StaticFiles(directory="static"), name='static')
+    os.makedirs(f'{root}/static/', exist_ok=True)
 
-        path = f'{root}/static/{upload_file.filename}'
+    app.mount('/static', StaticFiles(directory="static"), name='static')
 
-        with open(path, 'w+b') as buffer:
+    path = f'{root}/static/{file1.filename}'
 
-            shutil.copyfileobj(upload_file.file, buffer)
+    with open(path, 'w+b') as buffer:
 
-            unshipped_path = rename_file(upload_file.filename, "unshipped.txt")
+        shutil.copyfileobj(file1.file, buffer)
 
-        AmazonCheckSheet(unshipped_path).generate()
+        unshipped_path = rename_file(file1.filename, "unshipped.txt")
 
-        return {'filename': upload_file.filename,
-                'type': upload_file.content_type}
+    AmazonCheckSheet(unshipped_path).generate()
 
-    # except Exception as e:
+    return {'message':"ok"}
 
-        # raise JSONResponse(status_code=status.HTTP_201_CREATED, content=e)
 
 #_____________________________________________________________________________
 
 
-@app.get('/down/{name}', response_class=FileResponse)
+@app.get('/download/{name}', response_class=FileResponse)
 def get_file(name: str):
 
     path = f'{root}/static/{name}'
