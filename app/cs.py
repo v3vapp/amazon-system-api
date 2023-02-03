@@ -58,9 +58,10 @@ class AmazonCheckSheet:
         # df["商品名 @SKU"]   = self.df_main[['product-name', 'sku']].agg(' @'.join, axis=1)
         
         df["商品名"]   = self.df_main['product-name']
+        df["SKU"]     = self.df_main["sku"]
+
         df["個"]      = self.df_main["quantity-purchased"]
 
-        df["SKU"]     = self.df_main["sku"]
         df["要注文"]   = ""
         df["注文済"]   = ""
         df["完了"]     = ""
