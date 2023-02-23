@@ -40,24 +40,22 @@ def select_file():
 
 filename = select_file()
 
-# filename = "/home/daiki/Downloads/unship.txt"
+filename = "/home/daiki/Downloads/unship.txt"
 
 df_amazon = pd.read_table(filename, encoding = "cp932")
-   
 
 tdatetime = dt.now()
 now = tdatetime.strftime('%Y-%m-%d')
 
 df = pd.DataFrame()
 
-df['宛先1']     = ""
-df['宛先2']     = df_amazon["recipient-name"]
+df['宛先1']    = ""
+df['宛先2']    = df_amazon["recipient-name"]
 df['郵便番号']  = df_amazon["ship-postal-code"]
 
-df['住所1'] = df_amazon["ship-address-1"]
-df['住所2'] = df_amazon["ship-address-2"].str.cat(df_amazon["ship-address-3"], sep=" ")
-df['電話番号'] = ""
-df['品名']   = ""
+df['住所1']    = df_amazon["ship-address-1"]
+df['住所2']    = df_amazon["ship-address-2"].str.cat(df_amazon["ship-address-3"], sep=" ")
+df['電話番号']  = ""
+df['品名']     = "手芸材料"
 
-
-df.to_csv(f"C:\\Users\\username\\Desktop\\アマゾンシステム\\レターパック\\レターパック.csv", encoding = "cp932", index=False)
+df.to_csv(f"C:\\Users\\username\\Desktop\\アマゾンシステム\\レターパック\\作成データ\\レターパック_{now}.csv", encoding = "cp932", index=False)
